@@ -56,21 +56,41 @@ def make_answer():
           '\n\t2) 9\n\t3) 15\n\t4) 16\n\t5) 17\n>>> ', end='')
     task_num = int(input())
     criteria = []
-    criteria_max = [2, 2, 2]
     if task_num == 1 or task_num == 2:
+        criteria_max = [2, 2, 2]
         print(f'1. Соответствие ответа заданию ({criteria_max[0]} макс.): ', end='')
         criteria.append(int(input()))
-        print(f'2. Привлечение текста произведения для аргументации ({criteria_max[0]} макс.): ', end='')
+        print(f'2. Привлечение текста произведения для аргументации ({criteria_max[1]} макс.): ', end='')
         criteria.append(int(input()))
-        print(f'3. Логичность и соблюдение речевых норм ({criteria_max[0]} макс.): ', end='')
+        print(f'3. Логичность и соблюдение речевых норм ({criteria_max[2]} макс.): ', end='')
         criteria.append(int(input()))
         
     elif task_num == 3 or task_num == 4:
-        task = 2
+        criteria_max = [2, 2, 4, 2]
+        print(f'1. Сопоставление первого выбранного произведения с предложенным текстом ({criteria_max[0]} макс.): ', end='')
+        criteria.append(int(input()))
+        print(f'2. Сопоставление второго выбранного произведения с предложенным текстом ({criteria_max[1]} макс.): ', end='')
+        criteria.append(int(input()))
+        print(f'3. Привлечение текста произведения для аргументации ({criteria_max[2]} макс.): ', end='')
+        criteria.append(int(input()))
+        print(f'4. Логичность и соблюдение речевых норм ({criteria_max[3]} макс.): ', end='')
+        criteria.append(int(input()))
     elif task_num == 5:
-        task = 3
+        criteria_max = [3, 3, 2, 3, 3]
+        print(f'1. Соответствие сочинения теме и её раскрытие ({criteria_max[0]} макс.): ', end='')
+        criteria.append(int(input()))
+        print(f'2. Привлечение текста произведения для аргументации ({criteria_max[1]} макс.): ', end='')
+        criteria.append(int(input()))
+        print(f'3. Опора на теоретико-литературные понятия ({criteria_max[2]} макс.): ', end='')
+        criteria.append(int(input()))
+        print(f'4. Композиционная цельность и логичность ({criteria_max[3]} макс.): ', end='')
+        criteria.append(int(input()))
+        print(f'5. Соблюдение речевых норм ({criteria_max[3]} макс.): ', end='')
+        criteria.append(int(input()))
     else:
         raise ValueError('Wrong Task Number!')
+
+    check(criteria, criteria_max)
     k = sum(criteria)
     k_max = sum(criteria_max)
     emoji_mark = random.choice(EMOJI_EXCELLENT) if k / k_max >= 0.75 else random.choice(EMOJI_GOOD)
@@ -92,11 +112,13 @@ def make_answer():
     return header + body + end_body
 
 
-
+def check(score, max_score):
+    for sc, sc_max in zip(score, max_score):
+        if sc > sc_max:
+            raise ValueError('Ты ввела балл больше максимального, будь внимательней!')
 
 
 if __name__ == '__main__':
     answer = make_answer()
     print(answer)
     pyperclip.copy(answer)
-    
