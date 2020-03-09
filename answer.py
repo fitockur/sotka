@@ -64,37 +64,50 @@ def make_answer():
           '\n\t2) 9, 16\n\t3) 17\n>>> ', end='')
     task_num = int(input())
     criteria = []
+    comments = []
     if task_num == 1:
         criteria_max = [2, 2, 2]
         print(f'1. Соответствие ответа заданию ({criteria_max[0]} макс.): ', end='')
         criteria.append(int(input()))
+        add_comment(criteria[0], criteria_max[0], comments)
         print(f'2. Привлечение текста произведения для аргументации ({criteria_max[1]} макс.): ', end='')
         criteria.append(int(input()))
+        add_comment(criteria[1], criteria_max[1], comments)
         print(f'3. Логичность и соблюдение речевых норм ({criteria_max[2]} макс.): ', end='')
         criteria.append(int(input()))
+        add_comment(criteria[2], criteria_max[2], comments)
         
     elif task_num == 2:
         criteria_max = [2, 2, 4, 2]
         print(f'1. Сопоставление первого выбранного произведения с предложенным текстом ({criteria_max[0]} макс.): ', end='')
         criteria.append(int(input()))
+        add_comment(criteria[0], criteria_max[0], comments)
         print(f'2. Сопоставление второго выбранного произведения с предложенным текстом ({criteria_max[1]} макс.): ', end='')
         criteria.append(int(input()))
+        add_comment(criteria[1], criteria_max[1], comments)
         print(f'3. Привлечение текста произведения для аргументации ({criteria_max[2]} макс.): ', end='')
         criteria.append(int(input()))
+        add_comment(criteria[2], criteria_max[2], comments)
         print(f'4. Логичность и соблюдение речевых норм ({criteria_max[3]} макс.): ', end='')
         criteria.append(int(input()))
+        iadd_comment(criteria[3], criteria_max[3], comments)
     elif task_num == 3:
         criteria_max = [3, 3, 2, 3, 3]
         print(f'1. Соответствие сочинения теме и её раскрытие ({criteria_max[0]} макс.): ', end='')
         criteria.append(int(input()))
+        add_comment(criteria[0], criteria_max[0], comments)
         print(f'2. Привлечение текста произведения для аргументации ({criteria_max[1]} макс.): ', end='')
         criteria.append(int(input()))
+        add_comment(criteria[1], criteria_max[1], comments)
         print(f'3. Опора на теоретико-литературные понятия ({criteria_max[2]} макс.): ', end='')
         criteria.append(int(input()))
+        add_comment(criteria[2], criteria_max[2], comments)
         print(f'4. Композиционная цельность и логичность ({criteria_max[3]} макс.): ', end='')
         criteria.append(int(input()))
+        add_comment(criteria[3], criteria_max[3], comments)
         print(f'5. Соблюдение речевых норм ({criteria_max[3]} макс.): ', end='')
         criteria.append(int(input()))
+        add_comment(criteria[4], criteria_max[4], comments)
     else:
         raise IndexError('Wrong Task Number!')
 
@@ -107,8 +120,14 @@ def make_answer():
              random.choice(ENTER_OR_SPACE) + f'ДЗ № {ex_num}\n'
     
     body = '\n'
-    for i, (crit, crit_max) in enumerate(zip(criteria, criteria_max)):
-        body += f'K{i + 1}({crit_max})-{crit}\n'
+    for i, (crit, crit_max, com) in enumerate(zip(criteria, 
+                                                  criteria_max,
+                                                  comments)):
+        body += f'K{i + 1}({crit_max})-{crit} '
+        if len(com):
+            body += f'({com})'
+        body += '\n'
+
     body += '\n'
     add_ball = ''
     if sum(criteria) in [2, 3, 4]:
@@ -124,6 +143,14 @@ def check(score, max_score):
     for sc, sc_max in zip(score, max_score):
         if sc > sc_max:
             raise ValueError
+
+
+def add_comment(score, max_score, comments):
+    if score < max_score:
+            print('Комментарий: ', end='')
+            comments.append(input())
+    else:
+        comments.append('')
 
 
 if __name__ == '__main__':
