@@ -60,11 +60,11 @@ ENTER_OR_SPACE = ['\n', ' ']
 def make_answer():
     print('Введи порядковый номер домашнего задания: ', end='')
     ex_num = int(input())
-    print('Выбери задание, которое хочешь оценить:\n\t1) 8',
-          '\n\t2) 9\n\t3) 15\n\t4) 16\n\t5) 17\n>>> ', end='')
+    print('Выбери задание, которое хочешь оценить:\n\t1) 8, 15',
+          '\n\t2) 9, 16\n\t3) 17\n>>> ', end='')
     task_num = int(input())
     criteria = []
-    if task_num == 1 or task_num == 2:
+    if task_num == 1:
         criteria_max = [2, 2, 2]
         print(f'1. Соответствие ответа заданию ({criteria_max[0]} макс.): ', end='')
         criteria.append(int(input()))
@@ -73,7 +73,7 @@ def make_answer():
         print(f'3. Логичность и соблюдение речевых норм ({criteria_max[2]} макс.): ', end='')
         criteria.append(int(input()))
         
-    elif task_num == 3 or task_num == 4:
+    elif task_num == 2:
         criteria_max = [2, 2, 4, 2]
         print(f'1. Сопоставление первого выбранного произведения с предложенным текстом ({criteria_max[0]} макс.): ', end='')
         criteria.append(int(input()))
@@ -83,7 +83,7 @@ def make_answer():
         criteria.append(int(input()))
         print(f'4. Логичность и соблюдение речевых норм ({criteria_max[3]} макс.): ', end='')
         criteria.append(int(input()))
-    elif task_num == 5:
+    elif task_num == 3:
         criteria_max = [3, 3, 2, 3, 3]
         print(f'1. Соответствие сочинения теме и её раскрытие ({criteria_max[0]} макс.): ', end='')
         criteria.append(int(input()))
