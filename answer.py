@@ -119,6 +119,8 @@ def check(score, max_score):
 
 
 if __name__ == '__main__':
-    answer = make_answer()
-    print(answer)
-    pyperclip.copy(answer)
+    while True:
+        answer = make_answer()
+        print(answer)
+        pyperclip.copy(answer)
+        inp = input('\nДля продолжения нажми Enter...\n')
