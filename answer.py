@@ -34,6 +34,14 @@ EMOJI_EXCELLENT = [
     emoji.emojize(':scream:', use_aliases=True),
 ]
 
+TEXT_EXCELENT = [
+    'Молодец!',
+    'Отличная работа!',
+    'Так держать!',
+    'Отличный результат!',
+    'Хорошо справляешься!'
+]
+
 EMOJI_GOOD = [
     emoji.emojize(':cat:', use_aliases=True),
     emoji.emojize(':hatching_chick:', use_aliases=True),
@@ -93,7 +101,7 @@ def make_answer():
     check(criteria, criteria_max)
     k = sum(criteria)
     k_max = sum(criteria_max)
-    emoji_mark = random.choice(EMOJI_EXCELLENT) if k / k_max >= 0.75 else random.choice(EMOJI_GOOD)
+    emoji_mark = random.choice(EMOJI_EXCELLENT) + ' ' + random.choice(TEXT_EXCELENT) if k / k_max >= 0.75 else random.choice(EMOJI_GOOD)
 
     header = random.choice(PRIVET) + ' ' + random.choice(EMOJI_AFTER_PRIVET) +\
              random.choice(ENTER_OR_SPACE) + f'ДЗ № {ex_num}\n'
