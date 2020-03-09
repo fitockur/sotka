@@ -96,7 +96,7 @@ def make_answer():
         print(f'5. Соблюдение речевых норм ({criteria_max[3]} макс.): ', end='')
         criteria.append(int(input()))
     else:
-        raise ValueError('Wrong Task Number!')
+        raise IndexError('Wrong Task Number!')
 
     check(criteria, criteria_max)
     k = sum(criteria)
@@ -123,12 +123,18 @@ def make_answer():
 def check(score, max_score):
     for sc, sc_max in zip(score, max_score):
         if sc > sc_max:
-            raise ValueError('Ты ввела балл больше максимального, будь внимательней!')
+            raise ValueError
 
 
 if __name__ == '__main__':
     while True:
-        answer = make_answer()
-        print(answer)
-        pyperclip.copy(answer)
-        inp = input('\nДля продолжения нажми Enter...\n')
+        try:
+            answer = make_answer()
+            print(answer, '\n')
+            pyperclip.copy(answer)
+        except KeyboardInterrupt:
+            print('\nЗавершение работы.')
+            break
+        except ValueError:
+            print('\nТы ввела балл больше максимального, будь внимательней и начни сначала!\n')
+            continue
