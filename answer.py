@@ -90,7 +90,7 @@ def make_answer():
         add_comment(criteria[2], criteria_max[2], comments)
         print(f'4. Логичность и соблюдение речевых норм ({criteria_max[3]} макс.): ', end='')
         criteria.append(int(input()))
-        iadd_comment(criteria[3], criteria_max[3], comments)
+        add_comment(criteria[3], criteria_max[3], comments)
     elif task_num == 3:
         criteria_max = [3, 3, 2, 3, 3]
         print(f'1. Соответствие сочинения теме и её раскрытие ({criteria_max[0]} макс.): ', end='')
