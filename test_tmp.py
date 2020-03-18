@@ -65,7 +65,7 @@ def score_test(left, right):
     score = 0
     body = ''
     for i, (keys, values) in enumerate(zip(left, right)):
-        body += f'{i + 1})'
+        body += f'{i + 1}.'
         body_line = []
         for key, value in zip(keys, values):
             if re.match(key, value, flags=2):
@@ -168,3 +168,6 @@ if __name__ == '__main__':
         except (KeyboardInterrupt, EOFError):
             print('\nЗавершение работы.')
             break
+        except (UnboundLocalError, ValueError):
+            print('\nТы ввела что-то не то((, будь внимательней и начни сначала!\n')
+            continue
