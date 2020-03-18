@@ -3,6 +3,7 @@ import random
 import emoji
 import re
 import pyperclip
+import sys
 
 TRUE_ANSWERS = [
     [
@@ -97,13 +98,15 @@ def test_tmp(lvl):
         max_score1 = TRUE_SCORES[lvl - 1]
         max_score2 = TRUE_SCORES[lvl]
         print('Задание 1. Вставь ответ студента в формате: \n\t1. answer1\n\t...\n\tN. answerN\n\t...')
-        lines = input().split('\n')
+        # lines = input().split('\n')
+        lines = [(line.strip().split('.')[1].strip(),) for line in sys.stdin.readlines()]
+        # print(lines)
         # with open('test11.txt', 'r', encoding='utf-8') as f:
         #     lines = [(line.split('.')[1].strip(),) for line in f.read().split('\n')]
         body1, score1 = score_test(TRUE_ANSWERS[lvl - 1], lines)
 
         print('Задание 2. Вставь ответ студента в формате: \n\t1. answer1\n\t...\n\tN. answerN\n\t...')
-        lines = input().split('\n')
+        lines = [tuple(elem.strip() for elem in line.strip().split('.')[1].split(';')) for line in sys.stdin.readlines()]
         # with open('test12.txt', 'r', encoding='utf-8') as f:
         #     lines = [tuple(elem.strip() for elem in line.split('.')[1].split(';')) for line in f.read().split('\n')]
         body2, score2 = score_test(TRUE_ANSWERS[lvl], lines)
@@ -112,9 +115,9 @@ def test_tmp(lvl):
         lvl = int(lvl)
         max_score1 = TRUE_SCORES[lvl]
         print('Задание 1. Вставь ответ студента в формате: \n\t1. answer1\n\t...\n\tN. answerN\n\t...')
-        # lines = input().split('\n')
-        with open('test21.txt', 'r', encoding='utf-8') as f:
-            lines = [(line.split('.')[1].strip(),) for line in f.read().split('\n')]
+        lines = [(line.strip().split('.')[1].strip(),) for line in sys.stdin.readlines()]
+        # with open('test21.txt', 'r', encoding='utf-8') as f:
+        #     lines = [(line.split('.')[1].strip(),) for line in f.read().split('\n')]
         body1, score1 = score_test(TRUE_ANSWERS[lvl], lines)
 
         print('Задание 2.')
