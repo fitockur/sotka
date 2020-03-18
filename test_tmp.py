@@ -31,7 +31,7 @@ TRUE_ANSWERS = [
         ('элен', 'элен'),
         ('наташа', 'марья', 'княжна'),
         ('андрей болконский', 'аустрелицем'),
-        ('пьер безухов', 'наташа'),
+        ('пьер безухов', 'наташ'),
         ('вера',),
         ('анатоль курагин', 'андреем'),
         ('кутузов', 'багратион'),
@@ -68,11 +68,11 @@ def score_test(left, right):
         body += f'{i + 1}.'
         body_line = []
         for key, value in zip(keys, values):
-            if re.match(key, value, flags=2):
+            if re.search(key, value, flags=2):
                 score += 1
                 comment = '(+)'
             else:
-                comment = f'({key})'
+                comment = f'({key.upper()})'
             body_line.append(value + ' ' + comment)
         body += ' ' + '; '.join(body_line) + '\n'
     return body, score
