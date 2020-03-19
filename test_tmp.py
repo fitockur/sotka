@@ -72,7 +72,7 @@ def score_test(left, right):
                 score += 1
                 comment = '(+)'
             else:
-                comment = f'({key.strip('()').split('|')[0].upper()})'
+                comment = f"({key.strip('()').split('|')[0].upper()})"
             body_line.append(value + ' ' + comment)
         body += ' ' + '; '.join(body_line) + '\n'
     return body, score
