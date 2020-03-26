@@ -7,32 +7,61 @@ import sys
 
 TRUE_ANSWERS = [
     [
-        ('гоголь', 'мертвые души', 'отец чичикова'),
-        ('гоголь', 'мертвые души', 'автор'),
-        ('гоголь', 'мертвые души', 'автор'),
-        ('островский', 'гроза', 'катерина'),
-        ('островский', 'гроза', 'кулигин'),
-        ('островский', 'гроза', 'катерина'),
-        ('островский', 'гроза', 'дикой'),
-        ('тургенев', 'отцы и дети', 'базаров'),
-        ('тургенев', 'отцы и дети', '(николай петрович кирсанов)'),
-        ('гончаров', 'обломов', 'обломов'),
-        ('гончаров', 'обломов', 'штольц'),
-        ('некрасов', 'кому на руси жить хорошо', 'странники'),
-        ('толстой', 'война и мир', '(андрей|болконский)'),
-        ('толстой', 'война и мир', 'марья болконская'),
-        ('толстой', 'война и мир', 'автор'),
-        ('некрасов', 'кому на руси жить хорошо', 'безымянный мужик'),
-        ('гончаров', 'обломов', 'автор'),
-        ('островский', 'гроза', 'варвара'),
-        ('гоголь', 'мертвые души', 'автор'),
-        ('тургенев', 'отцы и дети', 'базаров')
+        ('эпос',),
+        ('роман-эпопея',),
+        ('реализм',),
+        ('портрет',),
+        ('213',),
+        ('диалог',),
+        ('деталь',),
+        ('безухов',),
+        ('сравнение',),
+        ('413',),
+        ('антитеза',),
+        ('повтор',),
+        ('психологизм',),
+        ('деталь',),
+        ('композиция',),
+        ('шерер',),
+        ('312',)
     ],
+    [
+        ('7', 'вера', 'николай', 'наташа', 'петя', 'соня'),
+        ('ипполита', 'анатоля'),
+        ('элен', '(элен|она)'),
+        ('(наташа|ростова)', '(марья|болконская|княжна|мари)', 'глаза'),
+        ('(андрей|болконский)', 'аустерлицем'),
+        ('(пьер|безухов)', 'наташ'),
+        ('вера',),
+        ('(анатоль|курагин)', '(андреем|князем|болконским)'),
+        ('кутузов', 'багратион'),
+        ('бородинского', 'анатоль'),
+        ('(элен|курагина)',),
+        ('согласны', 'андрей'),
+        ('подводы',),
+        ('анатоля', 'из москвы'),
+        ('(пети|ростова)',)
+    ],
+    [
+        ('1869',),
+        ('антитеза',),
+        ('пьер',),
+        ('(образок|иконку)',),
+        ('багратион',),
+        ('баздеев',),
+        ('кутузов',),
+        ('каратаев',),
+        ('наполеон',),
+        ('народ',)
+    ]
 ]
 
 TOTALS = ('Всего: ', 'Итого: ')
 
+TRUE_SCORES = (17, 31, 10,)
+
 def score_test(left, right):
+    # import pdb; pdb.set_trace()
     score = 0
     body = ''
     for i, (keys, values) in enumerate(zip(left, right)):
@@ -61,31 +90,35 @@ def add_ball(score):
     return ball
 
 def test_tmp(lvl):
-    header = random.choice(ans.PRIVET) + ' ' + random.choice(ans.EMOJI_AFTER_PRIVET) + '\n\n'
-    res = ''
-    res += header
+    header = random.choice(ans.PRIVET) + ' ' + random.choice(ans.EMOJI_AFTER_PRIVET) + '\n'
+    head1 = '\nЗадание 1\n'
+    head2 = '\nЗадание 2\n'
     if (lvl == '1'):
         lvl = int(lvl)
+        max_score1 = TRUE_SCORES[lvl - 1]
+        max_score2 = TRUE_SCORES[lvl]
         print('Задание 1. Вставь ответ студента в формате: \n\t1. answer1\n\t...\n\tN. answerN\n\t...')
         # lines = input().split('\n')
-        lines = [tuple(elem.strip() for elem in re.split(r'[,;]', line.strip().split('.')[1])) for line in sys.stdin.readlines()]
+        lines = [(line.strip().split('.')[1].strip(),) for line in sys.stdin.readlines()]
         # print(lines)
         # with open('test11.txt', 'r', encoding='utf-8') as f:
         #     lines = [(line.split('.')[1].strip(),) for line in f.read().split('\n')]
-        body, score = score_test(TRUE_ANSWERS[lvl - 1], lines)
-        max_score = 60
-        res += body + '\n'
+        body1, score1 = score_test(TRUE_ANSWERS[lvl - 1], lines)
+
+        print('Задание 2. Вставь ответ студента в формате: \n\t1. answer1\n\t...\n\tN. answerN\n\t...')
+        lines = [tuple(elem.strip() for elem in re.split(r'[,;]', line.strip().split('.')[1])) for line in sys.stdin.readlines()]
+        # with open('test12.txt', 'r', encoding='utf-8') as f:
+        #     lines = [tuple(elem.strip() for elem in line.split('.')[1].split(';')) for line in f.read().split('\n')]
+        body2, score2 = score_test(TRUE_ANSWERS[lvl], lines)
 
     if (lvl == '2'):
-        head1 = '\nЗадание 1\n'
-        head2 = '\nЗадание 2\n'
-        max_score1 = 60
+        lvl = int(lvl)
+        max_score1 = TRUE_SCORES[lvl]
         print('Задание 1. Вставь ответ студента в формате: \n\t1. answer1\n\t...\n\tN. answerN\n\t...')
-        lines = [tuple(elem.strip() for elem in re.split(r'[,;]', line.strip().split('.')[1])) for line in sys.stdin.readlines()]
+        lines = [(line.strip().split('.')[1].strip(),) for line in sys.stdin.readlines()]
         # with open('test21.txt', 'r', encoding='utf-8') as f:
         #     lines = [(line.split('.')[1].strip(),) for line in f.read().split('\n')]
-        body1, score1 = score_test(TRUE_ANSWERS[0], lines)
-        
+        body1, score1 = score_test(TRUE_ANSWERS[lvl], lines)
 
         print('Задание 2.')
         criteria = []
@@ -114,12 +147,13 @@ def test_tmp(lvl):
             if len(com):
                 body2 += f'({com})'
             body2 += '\n'
-        res += head1 + body1 + TOTALS[0] + str(score1) + ' ' + add_ball(score1) + '\n'
-        res += head2 + body2 + TOTALS[0] + str(score2) + ' ' + add_ball(score2) + '\n'
-        score = score1 + score2
-        max_score = max_score1 + max_score2
-        res += '\n' + TOTALS[1] + str(score) + ' ' + add_ball(score)
-    
+    res = ''
+    res += header
+    res += head1 + body1 + TOTALS[0] + str(score1) + ' ' + add_ball(score1) + '\n'
+    res += head2 + body2 + TOTALS[0] + str(score2) + ' ' + add_ball(score2) + '\n'
+    score = score1 + score2
+    res += '\n' + TOTALS[1] + str(score) + ' ' + add_ball(score)
+    max_score = max_score1 + max_score2
     emoji_mark = random.choice(ans.EMOJI_EXCELLENT) + ' ' +\
                  random.choice(ans.TEXT_EXCELENT) if score / max_score >= 0.75 else random.choice(ans.EMOJI_GOOD)
     res += emoji_mark
