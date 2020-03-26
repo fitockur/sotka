@@ -33,6 +33,7 @@ TRUE_ANSWERS = [
 TOTALS = ('Всего: ', 'Итого: ')
 
 def score_test(left, right):
+    # import pdb; pdb.set_trace()
     score = 0
     body = ''
     for i, (keys, values) in enumerate(zip(left, right)):
@@ -68,20 +69,21 @@ def test_tmp(lvl):
         lvl = int(lvl)
         print('Задание 1. Вставь ответ студента в формате: \n\t1. answer1\n\t...\n\tN. answerN\n\t...')
         # lines = input().split('\n')
-        lines = [tuple(elem.strip() for elem in re.split(r'[,;]', line.strip().split('.')[1])) for line in sys.stdin.readlines()]
+        lines = [tuple(elem.strip() for elem in re.split(r'[,;]', re.split(r'\d[.\)]', line)[1])) for line in sys.stdin.readlines()]
         # print(lines)
         # with open('test11.txt', 'r', encoding='utf-8') as f:
         #     lines = [(line.split('.')[1].strip(),) for line in f.read().split('\n')]
         body, score = score_test(TRUE_ANSWERS[lvl - 1], lines)
         max_score = 60
         res += body + '\n'
+        res += '\n' + TOTALS[1] + str(score) + ' ' + add_ball(score)
 
     if (lvl == '2'):
         head1 = '\nЗадание 1\n'
         head2 = '\nЗадание 2\n'
         max_score1 = 60
         print('Задание 1. Вставь ответ студента в формате: \n\t1. answer1\n\t...\n\tN. answerN\n\t...')
-        lines = [tuple(elem.strip() for elem in re.split(r'[,;]', line.strip().split('.')[1])) for line in sys.stdin.readlines()]
+        lines = [tuple(elem.strip() for elem in re.split(r'[,;]', re.split(r'\d[.\)]', line)[1])) for line in sys.stdin.readlines()]
         # with open('test21.txt', 'r', encoding='utf-8') as f:
         #     lines = [(line.split('.')[1].strip(),) for line in f.read().split('\n')]
         body1, score1 = score_test(TRUE_ANSWERS[0], lines)
