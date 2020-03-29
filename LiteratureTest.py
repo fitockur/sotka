@@ -42,18 +42,21 @@ class IncorrectTestFormat(UndefinedTestType):
 
 class LiteratureTest:
 
-    def __init__(self, test_type='exam'):
+    def __init__(self, test_type='exam', task_numbers=None):
         if test_type in ('exam', 'test', 'task'):
             self.test_type = test_type
         else:
             raise UndefinedTestType('Наверное такой тип задания еще не поддерживатеся!')
 
+        self.task_numbers = task_numbers if task_numbers is not None else ['8', '9', '15', '16', '17']
+        if test_type in ('exam', 'test'):
+            self.path_to_answers = 'test_answers.txt'
         self.score = 0
         self.max_score = 0
         self.text_body = ''
-        self.path_to_answers = 'test_answers.txt'
+        
 
-    def score_test(self) -> tuple:
+    def score_test(self, wo_smile=True) -> tuple:
         left = self.parse_answers()
         print('\nТест. Вставь ответ студента в формате: \n\t1. answer1\n\t...\n\tN. answerN\n\t...')
         right = []
@@ -84,7 +87,7 @@ class LiteratureTest:
                 body_line.append(value + ' ' + comment)
             text_body += ' ' + '; '.join(body_line) + '\n'
         self.text_body += text_body
-        self.text_body += self.pre_total(score)
+        self.text_body += self.total(score, max_score, wo_smile)
         self.score += score
         self.max_score += max_score
     
@@ -93,7 +96,7 @@ class LiteratureTest:
             answers = [tuple(ans.strip() for ans in line.split(';')) for line in f]
         return answers
                 
-    def score_task(self, task_number):
+    def score_task(self, task_number, wo_smile=True):
         task = self.get_task(task_number)
         text_body = f'\nЗадание {task_number}.\n'
         print(text_body, end='')
@@ -117,7 +120,7 @@ class LiteratureTest:
                 text_body += f'({com})'
             text_body += '\n'
         self.text_body += text_body
-        self.text_body += self.pre_total(score)
+        self.text_body += self.total(score, max_score, wo_smile)
         self.score += score
         self.max_score += max_score
 
@@ -139,10 +142,17 @@ class LiteratureTest:
         else:
             return 'баллов'
 
-    def pre_total(self, score):
-        return f"Итого: {score} {self.add_bal(score)}" + '\n'
+    def total(self, score, max_score, wo_smile=True):
+        if score / max_score > 0.75:
+            emoji_mark = emojize(choice(self.EMOJI_EXCELLENT), use_aliases=True)
+        else:
+            emoji_mark = emojize(choice(self.EMOJI_GOOD), use_aliases=True)
+        res = f"Итого: {score} {self.add_bal(score)} "
+        if not wo_smile:
+            res += emoji_mark
+        return res + '\n'
 
-    def total(self):
+    def exam_total(self):
         test_score = self.TO_TEST[self.score]
         if test_score >= 75:
             emoji_mark = emojize(choice(self.EMOJI_EXCELLENT), use_aliases=True) +\
@@ -166,11 +176,13 @@ class LiteratureTest:
         self.text_body = choice(self.GREETING) + ' ' +\
                          emojize(choice(self.EMOJI_AFTER_GREETING), use_aliases=True) + '\n'
         if self.test_type == 'exam':
-            task_numbers = ['8', '9', '15', '16', '17']
             self.score_test()
-            for task_number in task_numbers:
+            for task_number in self.task_numbers:
                 self.score_task(task_number)
-            self.text_body += self.total()
+            self.text_body += self.exam_total()
+        elif self.test_type == 'task':
+            for task_number in self.task_numbers:
+                self.score_task(task_number, wo_smile=False)
     
     def reset(self):
         self.score = 0
