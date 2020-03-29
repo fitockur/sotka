@@ -42,7 +42,7 @@ class IncorrectTestFormat(UndefinedTestType):
 
 class LiteratureTest:
 
-    def __init__(self, test_type='exam', task_numbers=None):
+    def __init__(self, test_type='exam', task_numbers=None, hw_num=None):
         if test_type in ('exam', 'test', 'task'):
             self.test_type = test_type
         else:
@@ -51,6 +51,8 @@ class LiteratureTest:
         self.task_numbers = task_numbers if task_numbers is not None else ['8', '9', '15', '16', '17']
         if test_type in ('exam', 'test'):
             self.path_to_answers = 'test_answers.txt'
+        if test_type == 'task':
+            self.hw_num = hw_num if hw_num is not None else 1
         self.score = 0
         self.max_score = 0
         self.text_body = ''
@@ -181,6 +183,7 @@ class LiteratureTest:
                 self.score_task(task_number)
             self.text_body += self.exam_total()
         elif self.test_type == 'task':
+            self.text_body += f'ДЗ №{self.hw_num}\n'
             for task_number in self.task_numbers:
                 self.score_task(task_number, wo_smile=False)
     
