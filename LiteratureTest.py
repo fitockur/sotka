@@ -1,7 +1,7 @@
 import re
 from sys import stdin
 from random import choice
-
+from emoji import emojize
 
 class UndefinedTestType(Exception):
     def __init__(self, *args):
@@ -17,18 +17,27 @@ class UndefinedTestType(Exception):
             return 'UndefinedTestType has been raised'
 
 
-class IncorrectTestScore(Exception):
-    def __init__(self, *args):
-        if args:
-            self.message = args[0]
+class UndefinedTask(UndefinedTestType):
+    def __str__(self):
+        if self.message:
+            return 'UndefinedTask, {0} '.format(self.message)
         else:
-            self.message = None
+            return 'UndefinedTask has been raised'
 
+
+class IncorrectTestScore(UndefinedTestType):
     def __str__(self):
         if self.message:
             return 'IncorrectTestScore, {0} '.format(self.message)
         else:
             return 'IncorrectTestScore has been raised'
+
+class IncorrectTestFormat(UndefinedTestType):
+    def __str__(self):
+        if self.message:
+            return 'IncorrectTestFormat, {0} '.format(self.message)
+        else:
+            return 'IncorrectTestFormat has been raised'
 
 
 class LiteratureTest:
@@ -46,20 +55,23 @@ class LiteratureTest:
 
     def score_test(self) -> tuple:
         left = self.parse_answers()
-        print('Тест. Вставь ответ студента в формате: \n\t1. answer1\n\t...\n\tN. answerN\n\t...')
+        print('\nТест. Вставь ответ студента в формате: \n\t1. answer1\n\t...\n\tN. answerN\n\t...')
         right = []
         nums = []
         pattern = re.compile(r'\d+[.\) ]')
         score, max_score = 0, 0
         for line in stdin.readlines():
-            dirty_num = pattern.search(line).group()
+            try:
+                dirty_num = pattern.search(line).group()
+            except AttributeError:
+                raise IncorrectTestFormat('Неверный формат теста!')
+            
             nums.append(dirty_num[:-1])
             elems = line.split(dirty_num)[1]
             right_ = tuple(elem.strip() for elem in re.split(r'[,;]', elems))
             max_score += len(right_)
             right.append(right_)
-        text_body = 'Начнем с теста.' if self.test_type == 'exam' else 'Тест.'
-        text_body += '\n'
+        text_body = '\nНачнем с теста.\n' if self.test_type == 'exam' else '\nТест.\n'
         for i, (keys, values) in enumerate(zip(left, right)):
             text_body += f'{nums[i]}.'
             body_line = []
@@ -71,7 +83,10 @@ class LiteratureTest:
                     comment = f"({key.strip('()').split('|')[0].upper()})"
                 body_line.append(value + ' ' + comment)
             text_body += ' ' + '; '.join(body_line) + '\n'
-        return text_body, score, max_score
+        self.text_body += text_body
+        self.text_body += self.pre_total(score)
+        self.score += score
+        self.max_score += max_score
     
     def parse_answers(self):
         with open(self.path_to_answers, 'r', encoding='utf-8') as f:
@@ -79,8 +94,8 @@ class LiteratureTest:
         return answers
                 
     def score_task(self, task_number):
-        task = self.TASKS[task_number]
-        text_body = f'Задание {task_number}.\n'
+        task = self.get_task(task_number)
+        text_body = f'\nЗадание {task_number}.\n'
         print(text_body, end='')
         scores = []
         comments = []
@@ -101,7 +116,10 @@ class LiteratureTest:
             if len(com):
                 text_body += f'({com})'
             text_body += '\n'
-        return text_body, score, max_score
+        self.text_body += text_body
+        self.text_body += self.pre_total(score)
+        self.score += score
+        self.max_score += max_score
 
     def add_comment(self, score, max_score):
         if score < max_score:
@@ -110,24 +128,83 @@ class LiteratureTest:
         else:
             comment = ''
         return comment
+
+    def add_bal(self, score):
+        if (score % 100 > 10) and (score % 100 < 20):
+            return 'баллов'
+        elif score % 10 == 1:
+            return 'балл'
+        elif score % 10 in (2, 3, 4):
+            return 'балла'
+        else:
+            return 'баллов'
+
+    def pre_total(self, score):
+        return f"Итого: {score} {self.add_bal(score)}" + '\n'
+
+    def total(self):
+        test_score = self.TO_TEST[self.score]
+        if test_score >= 75:
+            emoji_mark = emojize(choice(self.EMOJI_EXCELLENT), use_aliases=True) +\
+                         ' ' + choice(self.TEXT_EXCELENT)
+        else:
+            emoji_mark = emojize(choice(self.EMOJI_GOOD), use_aliases=True)
+        return f"\nВсего: первичных - {self.score} {self.add_bal(self.score)}, " +\
+               f"вторичных - {test_score} {self.add_bal(test_score)}" + emoji_mark
+    
+    def get_task(self, task_number):
+        if task_number in ('8', '15'):
+            return self.TASKS['8']
+        elif task_number in ('9', '16'):
+            return self.TASKS['9']
+        elif task_number == '17':
+            return self.TASKS['17']
+        else:
+            raise UndefinedTask('Неизвестное задание!')
     
     def start(self):
-        header = choice(self.GREETING) + ' ' +\
-                 choice(self.EMOJI_AFTER_GREETING) + '\n'
+        self.text_body = choice(self.GREETING) + ' ' +\
+                         emojize(choice(self.EMOJI_AFTER_GREETING), use_aliases=True) + '\n'
         if self.test_type == 'exam':
-            text_body, score, max_score = self.score_test()
-            body = text_body
-
+            task_numbers = ['8', '9', '15', '16', '17']
+            self.score_test()
+            for task_number in task_numbers:
+                self.score_task(task_number)
+            self.text_body += self.total()
+    
+    def reset(self):
+        self.score = 0
+        self.max_score = 0
+        self.text_body = ''
 
     TASKS = {
         '8': {
             'criterias': (
                 '1. Соответствие ответа заданию (2 макс.):',
                 '2. Привлечение текста произведения для аргументации (2 макс.):',
-                '3. Логичность и соблюдение речевых норм (2 макс.):'
+                '3. Логичность и соблюдение речевых норм (2 макс.):',
             ),
             'max_scores': (2, 2, 2)
-        }
+        },
+        '9': {
+            'criterias': (
+                '1. Сопоставление первого выбранного произведения с предложенным текстом (2 макс.):',
+                '2. Сопоставление второго выбранного произведения с предложенным текстом (2 макс.):',
+                '3. Привлечение текста произведения для аргументации (4 макс.):',
+                '4. Логичность и соблюдение речевых норм (2 макс.):',
+            ),
+            'max_scores': (2, 2, 4, 2)
+        },
+        '17': {
+            'criterias': (
+                '1. Соответствие сочинения теме и её раскрытие (3 макс.):',
+                '2. Привлечение текста произведения для аргументации (3 макс.):',
+                '3. Опора на теоретико-литературные понятия (2 макс.):',
+                '4. Композиционная цельность и логичность (3 макс.):',
+                '5. Соблюдение речевых норм (3 макс.):',
+            ),
+            'max_scores': (3, 3, 2, 3, 3)
+        },
     }
 
     GREETING = (
@@ -162,7 +239,7 @@ class LiteratureTest:
         ':scream:',
     )
 
-    TEXT_EXCELENT = ()
+    TEXT_EXCELENT = (
         'Молодец!',
         'Отличная работа!',
         'Так держать!',
@@ -183,8 +260,26 @@ class LiteratureTest:
         ':mortar_board:',
     )
 
+    TO_TEST = {
+        1: 3, 2: 5, 3: 7, 4: 9,
+        5: 11, 6: 13, 7: 15, 8: 18,
+        9: 20, 10: 22, 11: 24, 12: 26,
+        13: 28, 14: 30, 15: 32, 16: 34,
+        17: 35, 18: 36, 19: 37, 20: 38,
+        21: 40, 22: 41, 23: 42, 24: 43,
+        25: 44, 26: 45, 27: 47, 28: 48,
+        29: 49, 30: 50, 31: 51, 32: 52,
+        33: 54, 34: 55, 35: 56, 36: 57,
+        37: 58, 38: 59, 39: 61, 40: 62,
+        41: 63, 42: 64, 43: 65, 44: 66,
+        45: 68, 46: 69, 47: 70, 48: 71,
+        49: 72, 50: 73, 51: 77, 52: 80,
+        53: 84, 54: 87, 55: 90, 56: 94,
+        57: 97, 58: 100
+    }
+
 
 if __name__ == "__main__":
-    literature = LiteratureTest(test_type='test')
-    text_body, score, max_score = literature.score_task('8')
-    print(text_body)
+    literature = LiteratureTest(test_type='exam')
+    literature.start()
+    print(literature.text_body)
