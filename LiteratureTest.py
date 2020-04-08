@@ -12,47 +12,38 @@ class UndefinedTestType(Exception):
 
     def __str__(self):
         if self.message:
-            return 'UndefinedTestType, {0} '.format(self.message)
+            return '{0}, {1} '.format(self.__class__.__name__, self.message)
         else:
-            return 'UndefinedTestType has been raised'
+            return '{0} has been raised'.format(self.__class__.__name__)
 
 
 class UndefinedTask(UndefinedTestType):
-    def __str__(self):
-        if self.message:
-            return 'UndefinedTask, {0} '.format(self.message)
-        else:
-            return 'UndefinedTask has been raised'
+    pass
 
 
 class IncorrectTestScore(UndefinedTestType):
-    def __str__(self):
-        if self.message:
-            return 'IncorrectTestScore, {0} '.format(self.message)
-        else:
-            return 'IncorrectTestScore has been raised'
+    pass
+
 
 class IncorrectTestFormat(UndefinedTestType):
-    def __str__(self):
-        if self.message:
-            return 'IncorrectTestFormat, {0} '.format(self.message)
-        else:
-            return 'IncorrectTestFormat has been raised'
+    pass
+
+
+class IncorrectTestNum(UndefinedTestType):
+    pass
 
 
 class LiteratureTest:
 
-    def __init__(self, test_type='exam', task_numbers=None, hw_num=None):
+    def __init__(self, test_type='exam', task_numbers=None, test_answers=None, hw_num=None):
         if test_type in ('exam', 'test', 'task'):
             self.test_type = test_type
         else:
             raise UndefinedTestType('Наверное такой тип задания еще не поддерживатеся!')
 
         self.task_numbers = task_numbers if task_numbers is not None else ['8', '9', '15', '16', '17']
-        if test_type in ('exam', 'test'):
-            self.path_to_answers = 'test_answers.txt'
-        if test_type == 'task':
-            self.hw_num = hw_num if hw_num is not None else 1
+        self.path_to_answers = test_answers if test_answers is not None else 'test_answers.txt'
+        self.hw_num = hw_num if hw_num is not None else 1
         self.score = 0
         self.max_score = 0
         self.text_body = ''
@@ -186,6 +177,9 @@ class LiteratureTest:
             self.text_body += f'ДЗ №{self.hw_num}\n'
             for task_number in self.task_numbers:
                 self.score_task(task_number, wo_smile=False)
+        elif self.test_type == 'test':
+            self.text_body += f'ДЗ №{self.hw_num}\n'
+            self.score_test(wo_smile=False)
     
     def reset(self):
         self.score = 0
