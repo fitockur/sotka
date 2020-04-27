@@ -11,7 +11,7 @@ if __name__ == "__main__":
                 test_answers = 'hard_way.txt'
             else:
                 raise IncorrectTestNum
-            literature = LiteratureTest(test_type='test', test_answers=test_answers, hw_num=3)
+            literature = LiteratureTest(test_type='test', test_answers=test_answers, hw_num=9)
             literature.start()
             copy(literature.text_body)
             literature.reset()
