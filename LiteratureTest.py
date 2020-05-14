@@ -166,8 +166,9 @@ class LiteratureTest:
             raise UndefinedTask('Неизвестное задание!')
     
     def start(self):
-        self.text_body = choice(self.GREETING) + ' ' +\
-                         emojize(choice(self.EMOJI_AFTER_GREETING), use_aliases=True) + '\n'
+        # self.text_body = choice(self.GREETING) + ' ' +\
+        #                  emojize(choice(self.EMOJI_AFTER_GREETING), use_aliases=True) + '\n'
+        self.text_body = '#звездочка\n'
         if self.test_type == 'exam':
             self.score_test()
             for task_number in self.task_numbers:
