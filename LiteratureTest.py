@@ -96,11 +96,21 @@ class LiteratureTest:
         scores = []
         comments = []
         for i, criteria in enumerate(task['criterias']):
-            print(criteria, end=' ')
-            score = int(input())
-            comments.append(self.add_comment(score, task['max_scores'][i]))
-            if score > task['max_scores'][i] or score < 0:
-                raise IncorrectTestScore('Ты ввела балл больше максимально возможного!')
+            while True:
+                try:
+                    print(criteria, end=' ')
+                    score = int(input())
+                    comments.append(self.add_comment(score, task['max_scores'][i]))
+                    if score > task['max_scores'][i] or score < 0:
+                        raise IncorrectTestScore('Ты ввела балл больше максимально возможного!')
+                except IncorrectTestScore:
+                    print('Ты ввела балл больше максимально возможного!')
+                    continue
+                except ValueError:
+                    print('Нужно ввести целое число!')
+                    continue
+                else:
+                    break
             scores.append(score)
         score = sum(scores)
         max_score = sum(task['max_scores'])
