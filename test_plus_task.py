@@ -5,9 +5,9 @@ if __name__ == "__main__":
     while True:
         try:
             res = []
-            test_answers = 'test_plus_8.txt'
-            hw_num = 12
-            task_numbers = ('8',)
+            test_answers = 'test_plus_task.txt'
+            hw_num = 4
+            task_numbers = ('15',)
             which = input('\nВыбери уровень сложности: \n\t1) Легкий\n\t2) Сложный\n>> ')
             if which == '1':
                 res.append(LiteratureTest(test_type='test', test_answers=test_answers, hw_num=hw_num))
